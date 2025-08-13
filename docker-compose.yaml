@@ -1,7 +1,7 @@
 services:
 
   forgejo:
-    image: codeberg.org/forgejo/forgejo:${FORGEJO_VERSION:-11}
+    image: codeberg.org/forgejo/forgejo:${FORGEJO_VERSION:-12}
     env_file: environment.d/forgejo.env
     environment:
       FORGEJO__database__DB_TYPE: ${DATABASE_TYPE:-postgres}
