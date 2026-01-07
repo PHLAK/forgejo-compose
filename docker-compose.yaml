@@ -30,7 +30,7 @@ services:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_DB: ${DATABASE_DB:-forgejo}
     volumes:
-      - ${POSTGRES_VOLUME:-postgres-data}:/var/lib/postgresql/data
+      - ${POSTGRES_DATA_PATH:-postgres-data}:/var/lib/postgresql/data
       - /etc/localtime:/etc/localtime:ro
     healthcheck:
       test: pg_isready -d ${DATABASE_NAME:-forgejo} -U ${DATABASE_USER:-forgejo}
