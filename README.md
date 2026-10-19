@@ -10,11 +10,11 @@ Installation
 
   1. Clone the repository
 
-          git clone https://github.com/PHLAK/forgejo-compose.git
+         git clone https://github.com/PHLAK/forgejo-compose.git
 
   2. Initialize the configuration files
 
-           make init
+         make init
 
   3. Set environment variables in `.env`
 

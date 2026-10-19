@@ -1,7 +1,7 @@
 services:
 
   forgejo:
-    image: codeberg.org/forgejo/forgejo:${FORGEJO_VERSION:-16}
+    image: codeberg.org/forgejo/forgejo:${FORGEJO_VERSION:-latest}
     env_file: environment.d/forgejo.env
     environment:
       FORGEJO__database__DB_TYPE: ${DATABASE_TYPE:-postgres}
@@ -9,15 +9,18 @@ services:
       FORGEJO__database__NAME: ${DATABASE_NAME:-forgejo}
       FORGEJO__database__USER: ${DATABASE_USER:-forgejo}
       FORGEJO__database__PASSWD: ${DATABASE_PASSWORD}
+      FORGEJO__server__SSH_PORT: ${FORGEJO_SSH_PORT:-22}
       USER_UID: ${HOST_UID}
       USER_GID: ${HOST_GID}
     volumes:
       - ${FORGEJO_DATA_PATH:-./volumes/forgejo}:/data
       - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
     ports:
       - ${FORGEJO_WEB_PORT:-3000}:3000
       - ${FORGEJO_SSH_PORT:-22}:22
+    depends_on:
+      database:
+        condition: service_healthy
     labels:
       com.centurylinklabs.watchtower.scope: ${COMPOSE_PROJECT_NAME}
     restart: unless-stopped
@@ -28,7 +31,7 @@ services:
     environment:
       POSTGRES_USER: ${DATABASE_USER:-forgejo}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_DB: ${DATABASE_DB:-forgejo}
+      POSTGRES_DB: ${DATABASE_NAME:-forgejo}
     volumes:
       - ${DATABASE_VOLUME:-postgres-data}:/var/lib/postgresql/data
       - /etc/localtime:/etc/localtime:ro
@@ -51,7 +54,9 @@ services:
     volumes:
       - ${DATABASE_BACKUPS_PATH:-./volumes/backups}:/backups
       - /etc/localtime:/etc/localtime:ro
-    depends_on: [database]
+    depends_on:
+      database:
+        condition: service_healthy
     restart: unless-stopped
 
   watchtower:
